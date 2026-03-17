@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity PDF Tool | Link Remover</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <div class="glass-bg"></div>
+    <div class="container">
+        <header>
+            <div class="header-text">
+                <h1>Antigravity PDF Tool</h1>
+                <p>Private, Secure, High-Performance Link Removal</p>
+            </div>
+        </header>
+
+        <section class="settings">
+            <div class="checkbox-group">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="remove-annots">
+                    <span class="checkmark"></span>
+                    Remove All Annotations
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="scrub-metadata" checked>
+                    <span class="checkmark"></span>
+                    Scrub Metadata
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="remove-bookmarks" checked>
+                    <span class="checkmark"></span>
+                    Remove Bookmarks
+                </label>
+            </div>
+        </section>
+
+        <main>
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-content">
+                    <div class="icon">📄</div>
+                    <h2>Drop PDF files here</h2>
+                    <p>or click to browse</p>
+                </div>
+                <input type="file" id="file-input" multiple accept=".pdf" hidden>
+            </div>
+
+            <div id="file-list" class="file-list"></div>
+        </main>
+
+        <footer>
+            <button id="process-btn" class="btn-primary" style="display: none;">Process Files</button>
+            <div id="overall-progress" class="progress-bar-container" style="display: none;">
+                <div class="progress-bar"></div>
+            </div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
