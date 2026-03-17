@@ -84,17 +84,20 @@ processBtn.onclick = async () => {
         
         try {
             statusLabel.innerText = "Cleaning...";
+            console.log(`Processing file: ${file.name}`);
             const arrayBuffer = await file.arrayBuffer();
             const pdfDoc = await PDFDocument.load(arrayBuffer);
             
             // 1. Precise Link Removal Logic
+            console.log('1. Processing Annotations/Links...');
             const pages = pdfDoc.getPages();
             pages.forEach(page => {
                 const annotations = page.node.Annots();
                 if (annotations) {
                     // Iterate backwards as we are deleting items
                     for (let j = annotations.size() - 1; j >= 0; j--) {
-                        const annot = annotations.get(j);
+                        const annot = annotations.lookup(j);
+                        if (!annot || !annot.get) continue;
                         const subtype = annot.get(PDFLib.PDFName.of('Subtype'));
                         
                         // Type /Link or any annotation if user requested all
@@ -107,12 +110,14 @@ processBtn.onclick = async () => {
 
             // 2. Remove Bookmarks (Table of Contents / Outlines)
             if (removeBookmarks) {
+                console.log('2. Removing Bookmarks...');
                 const catalog = pdfDoc.catalog;
                 catalog.delete(PDFLib.PDFName.of('Outlines'));
             }
 
             // 3. Scrub Metadata
             if (scrubMetadata) {
+                console.log('3. Scrubbing Metadata...');
                 pdfDoc.setTitle('');
                 pdfDoc.setAuthor('');
                 pdfDoc.setSubject('');
@@ -121,10 +126,12 @@ processBtn.onclick = async () => {
                 pdfDoc.setCreator('');
             }
 
+            console.log('Saving processed PDF...');
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
 
+            console.log(`Successfully processed: ${file.name}`);
             statusLabel.innerText = "Success";
             statusLabel.style.color = "#4ade80";
             
@@ -132,7 +139,7 @@ processBtn.onclick = async () => {
             actionsContainer.innerHTML = `<button class="btn-item download" onclick="downloadFile('${file.name}', '${url}')">Download</button>`;
 
         } catch (err) {
-            console.error(err);
+            console.error(`Error processing ${file.name}:`, err);
             statusLabel.innerText = "Error";
             statusLabel.style.color = "#f87171";
         }
