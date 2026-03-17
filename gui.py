@@ -209,7 +209,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         print("Initializing MainWindow...")
-        self.setWindowTitle("PDF Link Remover")
+        self.setWindowTitle("ClearLink-PDF")
         self.resize(800, 600)
         self.setStyleSheet(Style.SHEET)
         
@@ -227,7 +227,7 @@ class MainWindow(QMainWindow):
         # Header
         header = QHBoxLayout()
         title_vbox = QVBoxLayout()
-        self.title = QLabel("Antigravity PDF Tool")
+        self.title = QLabel("ClearLink-PDF")
         self.title.setObjectName("Title")
         self.subtitle = QLabel("Fast, Private & Secure PDF Link Removal")
         self.subtitle.setObjectName("Subtitle")

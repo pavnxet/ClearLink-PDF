@@ -1,8 +1,8 @@
-# 🚀 Antigravity PDF Tool: Advanced Link Remover
+# 🚀 ClearLink-PDF: Advanced Link Remover
 
-A premium, high-performance desktop application designed to strip hyperlinks and sensitive data from PDF files. Built with a modern glassmorphic interface and a focus on privacy and efficiency.
+A premium, high-performance utility designed to strip hyperlinks and sensitive data from PDF files. Built with a modern glassmorphic interface and a focus on privacy and efficiency.
 
-![Application Preview](https://via.placeholder.com/800x450.png?text=Antigravity+PDF+Tool+Interface) *Placeholder: Create a screenshot and replace this link!*
+![Application Preview](https://via.placeholder.com/800x450.png?text=ClearLink+PDF+Interface) *Placeholder: Create a screenshot and replace this link!*
 
 ---
 
@@ -86,7 +86,7 @@ The application is built with **Privacy First** in mind:
 ## 📝 Technical Deep Dive: The Iteration Bug
 Standard PDF libraries often fail when deleting links because they use a standard `for-loop`. When an annotation is deleted, the internal list shifts, causing the loop to skip the next item. 
 
-**Antigravity PDF Tool** solves this by using a pointer-based `while` loop:
+**ClearLink-PDF** solves this by using a pointer-based `while` loop:
 ```python
 annot = page.first_annot
 while annot:
@@ -98,4 +98,4 @@ This ensures that even in complex PDFs with hundreds of overlapping links, **not
 
 ---
 
-*Developed with ❤️ by Antigravity*
+*Developed with ❤️ by [Pavneet](https://github.com/pavnxet/ClearLink-PDF)*
