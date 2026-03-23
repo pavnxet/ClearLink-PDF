@@ -1,100 +1,98 @@
-# 🚀 ClearLink-PDF: Advanced Link Remover
+# 🚀 ClearLink-PDF: Advanced PDF Toolset & Telegram Bot
 
-A premium, high-performance utility designed to strip hyperlinks and sensitive data from PDF files. Built with a modern glassmorphic interface and a focus on privacy and efficiency.
-
-![Application Preview](https://via.placeholder.com/800x450.png?text=ClearLink+PDF+Interface) *Placeholder: Create a screenshot and replace this link!*
+ClearLink-PDF is a premium, high-performance utility designed for advanced PDF manipulation. Originally a specialized tool to strip hyperlinks, it has been expanded into a comprehensive PDF processing engine with a modern GUI and a powerful Telegram Bot interface.
 
 ---
 
 ## ✨ Key Features
 
-### 💎 Premium UI/UX
-- **Glassmorphic Design**: A sleek, dark-mode aesthetic with translucent elements and smooth rounded corners.
-- **Interactive Drag-and-Drop In**: Simply drag your PDFs from Windows Explorer directly into the application.
-- **Seamless Drag-and-Drop Out**: Once processed, drag the resulting "Success" items directly out of the app to any folder or your desktop.
-- **Batch Processing**: Handle dozens of files simultaneously with real-time progress tracking.
-- **Instant Preview & Open**: Open your cleaned PDF directly from the app with a single click after processing.
+### 💎 Premium GUI
+- **Glassmorphic Design**: A sleek, dark-mode aesthetic with translucent elements.
+- **Interactive Drag-and-Drop**: Drag PDFs in for processing and drag results out directly.
+- **Batch Processing**: Handle multiple files simultaneously with real-time progress.
+- **Instant Preview**: Open cleaned PDFs directly from the app after processing.
+
+### 🤖 Telegram Bot Interface
+A fully integrated Telegram Bot (`telegram_bot.py`) that brings all PDF features to your chat:
+- **Large File Support**: Configurable for Local Bot API Server to handle files up to **2GB**.
+- **Interactive Commands**: Use simple buttons to trigger complex PDF operations.
+- **Merge Sessions**: Send multiple files and merge them with a single command.
+- **Secure Processing**: Temporary files are handled in isolated workspace directories.
 
 ### 🧠 "Perfect Logic" PDF Engine
-- **Linked-List Traversal**: Unlike standard tools that skip links during deletion, our engine safely traverses the internal PDF linked-list to ensure **100% link removal**.
-- **Triple-Sweep Cleaning**:
-    1. **Visible Links**: Standard annotations and URI links.
-    2. **Invisible Clickables**: Internal PDF link objects and URI Action events.
-    3. **Embedded Widgets**: Forms and interactive elements that function as links.
-- **State-of-the-Art Compression**: Uses `PyMuPDF` garbage collection level 4 and `zlib` deflation to significantly reduce file sizes without losing quality.
-- **Privacy Focus**: Built-in metadata scrubbing to remove Author, Creator, and Producer information.
+Our engine performs 12+ advanced operations with 100% reliability:
+1.  **🧹 Link Removal**: Triple-sweep cleaning of visible and invisible clickables.
+2.  **🗜 Deep Compression**: Object optimization and zlib deflation for minimal file size.
+3.  **📄 Text Extraction**: Fast and accurate text recovery from any document.
+4.  **🖼 Image Extraction**: Securely pulls all embedded images into a local folder.
+5.  **🔗 PDF Merging**: Combine multiple documents into one seamless file.
+6.  **✂️ PDF Splitting**: Break down documents into individual high-quality pages.
+7.  **🔄 Page Rotation**: Change orientation (90/180/270°) across the entire file.
+8.  **🔒 AES-256 Encryption**: Secure your documents with owner and user passwords.
+9.  **🔓 PDF Decryption**: Remove protection from encrypted files instantly.
+10. **💧 Custom Watermarking**: Add dynamic text overlays to every page.
+11. **📸 Image Conversion**: Turn PDF pages into high-resolution PNG images.
+12. **🛡 Metadata Scrubbing**: Removes Authors, Producers, and sensitive timestamps.
 
 ---
 
-## 🛠️ Advanced Options Explained
-
-| Feature | Description |
-| :--- | :--- |
-| **Remove All Annotations** | Strips everything: highlights, notes, sticky notes, and drawing markups. |
-| **Scrub Metadata** | Resets the PDF "Properties" to blank (removes timestamps and author info). |
-| **Compress Size** | Applies deep object optimization to shrink the file size. |
-| **Remove Bookmarks** | Deletes the Table of Contents (often used for internal/external tracking). |
-
----
-
-## 🚀 Installation & Setup
-
-This application is designed to run in a lightweight virtual environment to keep your system clean.
+## 🛠️ Installation & Setup
 
 ### 1. Requirements
-- Python 3.8+
-- Windows OS (Optimized for DirectWrite fonts)
+- **Python 3.8+**
+- **Windows OS** (Optimized for DirectWrite fonts)
 
-### 2. Setup (Manual Instructions)
-If you are setting this up for the first time:
-
+### 2. Dependencies
+Install the required high-performance libraries:
 ```powershell
-# Create the virtual environment
-python -m venv venv
-
-# Install the high-performance dependencies
-.\venv\Scripts\python -m pip install PySide6 pymupdf
+pip install PySide6 pymupdf pyTelegramBotAPI
 ```
 
-### 3. Running the App
+### 3. Running the GUI
 ```powershell
-.\venv\Scripts\python main.py
+python main.py
 ```
 
----
-
-## 🌐 Web Version (GitHub Pages)
-
-The web-based version of this tool is located in the `web/` directory. It uses `pdf-lib` to process files directly in the browser.
-
-### **How to Deploy to GitHub Pages:**
-1.  **Push your files** (including the `web/` folder) to a GitHub repository.
-2.  Go to **Settings > Pages** in your repo.
-3.  Under "Build and deployment", select the **main** branch.
-4.  Specify the folder as **`web/`** (or if pushing only the contents of `web` to a `gh-pages` branch, use root).
-5.  Click **Save**, and your link remover will be live!
+### 4. Running the Telegram Bot
+1. Replace `YOUR_BOT_TOKEN_HERE` in `telegram_bot.py` or set it in your environment:
+   ```powershell
+   set BOT_TOKEN=your_token_here
+   ```
+2. Launch the bot:
+   ```powershell
+   python telegram_bot.py
+   ```
 
 ---
 
-## 📂 Automatic Cleanup
-The application is built with **Privacy First** in mind:
-- **Zero Residue**: When you close the GUI, the application automatically scans and deletes all processed temporary files and removes the `processed_pdfs` folder if empty.
-- **Local Processing**: All processing happens on your machine. No data is ever uploaded to a server.
+## 🌐 Huge File Processing (>20MB)
+Standard Telegram Bots are limited to 20MB downloads. To process massive PDFs (up to 2GB):
+1. Setup a [Local Bot API Server](https://core.telegram.org/bots/api#using-a-local-bot-api-server).
+2. Set `USE_LOCAL_API_SERVER = True` in `telegram_bot.py`.
 
 ---
 
-## 📝 Technical Deep Dive: The Iteration Bug
-Standard PDF libraries often fail when deleting links because they use a standard `for-loop`. When an annotation is deleted, the internal list shifts, causing the loop to skip the next item. 
+## 🚀 Easy Vercel Deployment
+You can seamlessly deploy this bot to Vercel for free 24/7 hosting. Using Serverless Functions, it will automatically run your bot via Webhooks without needing a computer turned on!
 
-**ClearLink-PDF** solves this by using a pointer-based `while` loop:
-```python
-annot = page.first_annot
-while annot:
-    next_annot = annot.next # Store next pointer BEFORE deletion
-    page.delete_annot(annot)
-    annot = next_annot      # Move to stored pointer
-```
-This ensures that even in complex PDFs with hundreds of overlapping links, **not a single one is missed.**
+> **Note on Free-Tier Limits:** Vercel limits Serverless Function execution times to 10 seconds. Extremely large PDFs may fail to process due to this timeout.
+
+### Deployment Steps:
+1. **Push your code to GitHub** (Make sure your repository has `vercel.json`, `requirements.txt`, and the `api/` folder).
+2. Go to [Vercel](https://vercel.com/) and create a **New Project**.
+3. Import your GitHub repository.
+4. **Important**: Before deploying, go to **Environment Variables** and add:
+   - Key: `BOT_TOKEN` | Value: `Your Telegram Bot Token`
+5. Click **Deploy**.
+6. Once deployed, open your browser and go to your Vercel URL directly followed by `/setup` to initialize the Webhook (e.g., `https://your-bot-project.vercel.app/setup`).
+7. Your bot is now live and waiting for messages!
+
+---
+
+## 📂 Privacy & Safety
+- **No Residual Data**: The GUI preserves your output while the Bot uses isolated temp folders.
+- **Local-Only**: All processing happens on your machine. No data is ever sent to third-party processing APIs.
+- **Pointer-Based Logic**: Our code uses pointer-referenced traversal to ensure 100% of links are removed, even in complex nested structures.
 
 ---
 

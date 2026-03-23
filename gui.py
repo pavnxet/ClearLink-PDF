@@ -361,27 +361,8 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         """Cleanup temporary files on exit"""
-        print("Cleaning up temporal file results...")
-        for widget in self.files.values():
-            if widget.output_path and os.path.exists(widget.output_path):
-                try:
-                    # Only delete if it's in a temporary directory we managed
-                    # But per current logic we save to 'processed_pdfs'
-                    # Let's just track all outputs and delete them if they exist
-                    os.remove(widget.output_path)
-                except Exception as e:
-                    print(f"Failed to delete {widget.output_path}: {e}")
-        
-        # Also try to remove empty 'processed_pdfs' folders
-        processed_dirs = set()
-        for widget in self.files.values():
-            if widget.output_path:
-                processed_dirs.add(os.path.dirname(widget.output_path))
-        
-        for d in processed_dirs:
-            if os.path.exists(d) and not os.listdir(d):
-                try:
-                    os.rmdir(d)
-                except: pass
+        print("Closing application...")
+        # Removed the logic that deletes output files from 'processed_pdfs' directory
+        # so users don't lose their processed files on exit.
                 
         event.accept()
