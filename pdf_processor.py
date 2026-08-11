@@ -4,6 +4,21 @@ from pathlib import Path
 import fitz  # PyMuPDF
 
 
+_METADATA_FIELDS = (
+    "format",
+    "title",
+    "author",
+    "subject",
+    "keywords",
+    "creator",
+    "producer",
+    "creationDate",
+    "modDate",
+    "trapped",
+    "encryption",
+)
+
+
 def _ensure_parent(output_path):
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
 
@@ -13,6 +28,27 @@ def _save_and_verify(doc, output_path, **kwargs):
     doc.save(output_path, **kwargs)
     if not os.path.isfile(output_path) or os.path.getsize(output_path) == 0:
         raise IOError(f"Output file was not created correctly: {output_path}")
+
+
+def _metadata_is_scrubbed(metadata):
+    """Return True when user-visible PDF metadata fields are empty.
+
+    PyMuPDF always reports structural fields such as ``format`` for an opened
+    PDF, so checking ``any(metadata.values())`` incorrectly treats a clean PDF
+    as containing metadata.
+    """
+    user_fields = (
+        "title",
+        "author",
+        "subject",
+        "keywords",
+        "creator",
+        "producer",
+        "creationDate",
+        "modDate",
+        "trapped",
+    )
+    return not any(metadata.get(field) for field in user_fields)
 
 
 def remove_hyperlinks(input_path, output_path, remove_all_annots=False, scrub_metadata=True, compress=True, remove_bookmarks=False):
@@ -54,7 +90,7 @@ def remove_hyperlinks(input_path, output_path, remove_all_annots=False, scrub_me
                 remaining_annots = sum(1 for page in check for _ in iter_annots(page))
                 if remaining_annots:
                     return False, f"Verification failed: {remaining_annots} annotations remain"
-            if scrub_metadata and any(check.metadata.values()):
+            if scrub_metadata and not _metadata_is_scrubbed(check.metadata):
                 return False, "Verification failed: metadata remains"
 
         return True, "Processing successful"
@@ -135,11 +171,12 @@ def split_pdf(input_path, output_dir):
 def rotate_pdf(input_path, output_path, angle):
     try:
         angle = int(angle)
-        if angle % 90 != 0:
+        normalized_angle = angle % 360
+        if normalized_angle not in (0, 90, 180, 270):
             return False, "Angle must be a multiple of 90 degrees"
         with fitz.open(input_path) as doc:
             for page in doc:
-                page.set_rotation(angle)
+                page.set_rotation(normalized_angle)
             _save_and_verify(doc, output_path, garbage=3, deflate=True)
         return True, "Rotated successfully"
     except Exception as e:
@@ -189,12 +226,14 @@ def add_watermark(input_path, output_path, watermark_text):
         with fitz.open(input_path) as doc:
             for page in doc:
                 rect = page.rect
+                # PyMuPDF's insert_text() accepts only 0/90/180/270 degree
+                # rotations. Keep the watermark API deterministic and portable.
                 page.insert_text(
                     (rect.width / 4, rect.height / 2),
                     watermark_text,
                     fontsize=48,
                     color=(0.7, 0.7, 0.7),
-                    rotate=45,
+                    rotate=0,
                     overlay=True,
                 )
             _save_and_verify(doc, output_path, garbage=3, deflate=True)
