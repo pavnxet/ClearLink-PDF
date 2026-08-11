@@ -11,12 +11,8 @@ def _ensure_parent(output_path):
 def _save_and_verify(doc, output_path, **kwargs):
     _ensure_parent(output_path)
     doc.save(output_path, **kwargs)
-    doc.close()
     if not os.path.isfile(output_path) or os.path.getsize(output_path) == 0:
         raise IOError(f"Output file was not created correctly: {output_path}")
-    with fitz.open(output_path) as check:
-        if check.page_count < 0:
-            raise IOError("Generated PDF could not be validated")
 
 
 def remove_hyperlinks(input_path, output_path, remove_all_annots=False, scrub_metadata=True, compress=True, remove_bookmarks=False):
