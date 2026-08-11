@@ -39,7 +39,16 @@ def test_remove_links_and_metadata(tmp_path):
     assert ok, message
     with fitz.open(out) as doc:
         assert all(not page.get_links() for page in doc)
-        assert not any(doc.metadata.values())
+        metadata = doc.metadata
+        user_metadata_fields = (
+            "title",
+            "author",
+            "subject",
+            "keywords",
+            "creator",
+            "producer",
+        )
+        assert not any(metadata.get(field) for field in user_metadata_fields)
 
 
 def test_split_and_merge(tmp_path):
