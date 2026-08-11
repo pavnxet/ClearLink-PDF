@@ -1,99 +1,77 @@
-# 🚀 ClearLink-PDF: Advanced PDF Toolset & Telegram Bot
+# ClearLink-PDF
 
-ClearLink-PDF is a premium, high-performance utility designed for advanced PDF manipulation. Originally a specialized tool to strip hyperlinks, it has been expanded into a comprehensive PDF processing engine with a modern GUI and a powerful Telegram Bot interface.
+ClearLink-PDF is a local-first PDF processing toolkit with a Python engine, desktop GUI, optional Telegram interface, and a ChatGPT/Codex Plugin package.
 
----
+## ChatGPT / Codex Plugin
 
-## ✨ Key Features
+The repository now includes a production-oriented plugin package under `.codex-plugin/` and a focused Skill under `skills/clearlink-pdf/`.
 
-### 💎 Premium GUI
-- **Glassmorphic Design**: A sleek, dark-mode aesthetic with translucent elements.
-- **Interactive Drag-and-Drop**: Drag PDFs in for processing and drag results out directly.
-- **Batch Processing**: Handle multiple files simultaneously with real-time progress.
-- **Instant Preview**: Open cleaned PDFs directly from the app after processing.
+The plugin guides Codex to use the repository's canonical `pdf_processor.py` engine for:
 
-### 🤖 Telegram Bot Interface
-A fully integrated Telegram Bot (`telegram_bot.py`) that brings all PDF features to your chat:
-- **Large File Support**: Configurable for Local Bot API Server to handle files up to **2GB**.
-- **Interactive Commands**: Use simple buttons to trigger complex PDF operations.
-- **Merge Sessions**: Send multiple files and merge them with a single command.
-- **Secure Processing**: Temporary files are handled in isolated workspace directories.
+- removing PDF links and annotations
+- metadata scrubbing
+- compression
+- text extraction
+- image extraction
+- PDF merging and splitting
+- page rotation
+- AES-256 encryption and decryption
+- watermarking
+- PDF-to-PNG conversion
 
-### 🧠 "Perfect Logic" PDF Engine
-Our engine performs 12+ advanced operations with 100% reliability:
-1.  **🧹 Link Removal**: Triple-sweep cleaning of visible and invisible clickables.
-2.  **🗜 Deep Compression**: Object optimization and zlib deflation for minimal file size.
-3.  **📄 Text Extraction**: Fast and accurate text recovery from any document.
-4.  **🖼 Image Extraction**: Securely pulls all embedded images into a local folder.
-5.  **🔗 PDF Merging**: Combine multiple documents into one seamless file.
-6.  **✂️ PDF Splitting**: Break down documents into individual high-quality pages.
-7.  **🔄 Page Rotation**: Change orientation (90/180/270°) across the entire file.
-8.  **🔒 AES-256 Encryption**: Secure your documents with owner and user passwords.
-9.  **🔓 PDF Decryption**: Remove protection from encrypted files instantly.
-10. **💧 Custom Watermarking**: Add dynamic text overlays to every page.
-11. **📸 Image Conversion**: Turn PDF pages into high-resolution PNG images.
-12. **🛡 Metadata Scrubbing**: Removes Authors, Producers, and sensitive timestamps.
+The Skill deliberately treats PDFs as untrusted input, avoids logging document contents or passwords, prefers non-destructive output paths, and requires output verification after writes.
 
----
+## Local installation
 
-## 🛠️ Installation & Setup
+Python 3.10+ is recommended.
 
-### 1. Requirements
-- **Python 3.8+**
-- **Windows OS** (Optimized for DirectWrite fonts)
-
-### 2. Dependencies
-Install the required high-performance libraries:
 ```powershell
-pip install PySide6 pymupdf pyTelegramBotAPI
+python -m pip install -r requirements.txt
+python -m pip install pytest
+python -m pytest -q
 ```
 
-### 3. Running the GUI
+Run the desktop application with:
+
 ```powershell
 python main.py
 ```
 
-### 4. Running the Telegram Bot
-1. Replace `YOUR_BOT_TOKEN_HERE` in `telegram_bot.py` or set it in your environment:
-   ```powershell
-   set BOT_TOKEN=your_token_here
-   ```
-2. Launch the bot:
-   ```powershell
-   python telegram_bot.py
-   ```
+## PDF engine
 
----
+`pdf_processor.py` is the canonical processing layer. It uses PyMuPDF and performs explicit output validation for destructive transformations. Rotation accepts only multiples of 90 degrees, and encryption/decryption paths verify their resulting security state.
 
-## 🌐 Huge File Processing (>20MB)
-Standard Telegram Bots are limited to 20MB downloads. To process massive PDFs (up to 2GB):
-1. Setup a [Local Bot API Server](https://core.telegram.org/bots/api#using-a-local-bot-api-server).
-2. Set `USE_LOCAL_API_SERVER = True` in `telegram_bot.py`.
+## Telegram bot
 
----
+The Telegram integration is optional. Configure the bot token through an environment variable rather than committing secrets:
 
-## 🚀 Easy Vercel Deployment
-You can seamlessly deploy this bot to Vercel for free 24/7 hosting. Using Serverless Functions, it will automatically run your bot via Webhooks without needing a computer turned on!
+```powershell
+$env:BOT_TOKEN="your-token"
+python telegram_bot.py
+```
 
-> **Note on Free-Tier Limits:** Vercel limits Serverless Function execution times to 10 seconds. Extremely large PDFs may fail to process due to this timeout.
+Large-file processing may require a Telegram Local Bot API Server. Do not expose a Local Bot API Server directly to the public internet.
 
-### Deployment Steps:
-1. **Push your code to GitHub** (Make sure your repository has `vercel.json`, `requirements.txt`, and the `api/` folder).
-2. Go to [Vercel](https://vercel.com/) and create a **New Project**.
-3. Import your GitHub repository.
-4. **Important**: Before deploying, go to **Environment Variables** and add:
-   - Key: `BOT_TOKEN` | Value: `Your Telegram Bot Token`
-5. Click **Deploy**.
-6. Once deployed, open your browser and go to your Vercel URL directly followed by `/setup` to initialize the Webhook (e.g., `https://your-bot-project.vercel.app/setup`).
-7. Your bot is now live and waiting for messages!
+## Vercel webhook
 
----
+`api/webhook.py` and `vercel.json` provide the optional webhook deployment path. Treat this as a separate deployment surface from the local PDF engine. Vercel/serverless execution limits can make large PDF jobs unsuitable for synchronous webhook processing.
 
-## 📂 Privacy & Safety
-- **No Residual Data**: The GUI preserves your output while the Bot uses isolated temp folders.
-- **Local-Only**: All processing happens on your machine. No data is ever sent to third-party processing APIs.
-- **Pointer-Based Logic**: Our code uses pointer-referenced traversal to ensure 100% of links are removed, even in complex nested structures.
+Before public deployment, add authentication around webhook setup and configure Telegram's webhook secret-token mechanism. Do not treat an unauthenticated `/setup` endpoint as a security boundary.
 
----
+## Security and privacy
 
-*Developed with ❤️ by [Pavneet](https://github.com/pavnxet/ClearLink-PDF)*
+- Process sensitive PDFs locally whenever possible.
+- Never commit `BOT_TOKEN`, passwords, private PDFs, or extracted document content.
+- Use isolated temporary directories for remote jobs and clean them up after completion.
+- Treat user-uploaded PDFs as untrusted data; do not execute embedded content.
+- Do not claim a PDF is link-free or metadata-free without reopening and verifying the output.
+
+## Development
+
+CI runs the PDF regression suite against supported Python versions. New PDF transformations should include a regression test covering both the operation and output validation.
+
+## License
+
+See the repository license and upstream project terms before redistributing or deploying the software.
+
+Developed by Pavneet: https://github.com/pavnxet/ClearLink-PDF
