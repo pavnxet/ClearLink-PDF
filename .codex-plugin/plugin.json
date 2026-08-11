@@ -1,0 +1,41 @@
+{
+  "name": "clearlink-pdf",
+  "version": "1.0.0",
+  "description": "Deterministic PDF cleanup and transformation workflows for ChatGPT and Codex.",
+  "author": {
+    "name": "Pavneet",
+    "url": "https://github.com/pavnxet"
+  },
+  "homepage": "https://github.com/pavnxet/ClearLink-PDF",
+  "repository": "https://github.com/pavnxet/ClearLink-PDF",
+  "keywords": [
+    "pdf",
+    "document-processing",
+    "pdf-cleanup",
+    "merge",
+    "split",
+    "compression",
+    "metadata",
+    "watermark",
+    "encryption"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ClearLink PDF",
+    "shortDescription": "Clean, transform, inspect, and batch-process PDF files locally",
+    "longDescription": "Use ClearLink PDF for deterministic PDF workflows including link and annotation removal, compression, text and image extraction, merging, splitting, rotation, encryption, decryption, watermarking, metadata scrubbing, and PDF-to-image conversion. Prefer the bundled local processing scripts and verify outputs after every write operation.",
+    "developerName": "Pavneet",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "websiteURL": "https://github.com/pavnxet/ClearLink-PDF",
+    "defaultPrompt": [
+      "Remove all links and metadata from this PDF.",
+      "Merge these PDFs and verify the output.",
+      "Extract the text and images from this PDF."
+    ],
+    "brandColor": "#2563EB",
+    "composerIcon": "./assets/clearlink-pdf.svg",
+    "logo": "./assets/clearlink-pdf.svg",
+    "screenshots": []
+  }
+}
